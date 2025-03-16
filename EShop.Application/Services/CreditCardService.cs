@@ -58,5 +58,6 @@ public class CreditCardService
 
         if (Regex.IsMatch(cardNumber, @"^(50|5[6-9]|6\d)\d{10,17}$"))
             return "Maestro";
+        return "Unknown";
     }
 }
