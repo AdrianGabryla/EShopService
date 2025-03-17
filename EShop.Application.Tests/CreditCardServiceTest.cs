@@ -1,4 +1,5 @@
 using EShop.Application.Services;
+using EShop.Domain.Exceptions.CardNumber;
 using System.ComponentModel.DataAnnotations;
 
 namespace EShop.Application.Tests
@@ -24,22 +25,26 @@ namespace EShop.Application.Tests
 
         }
         [Fact]
-        public void CheckCardNumber_TooShortLength_ReturnsFalse()
+        public void CheckCardNumber_ThrowsTooShortLengthException()
         {
             var creditCardService = new CreditCardService();
-            string num = "1234678";
-            var result = creditCardService.ValidateCard(num);
-            Assert.False(result);
+            Assert.Throws<CardNumberTooShortException>(() => creditCardService.ValidateCard("1234"));
 
         }
+
         [Fact]
-        public void CheckCardNumber_TooLongLength_ReturnsFalse()
+        public void CheckCardNumber_ThrowsTooLongLengthException()
         {
             var creditCardService = new CreditCardService();
-            string num = "1234567896098345678878676767";
-            var result = creditCardService.ValidateCard(num);
-            Assert.False(result);
+            Assert.Throws<CardNumberTooLongException>(() => creditCardService.ValidateCard("123412341234123412341234"));
         }
+        [Fact]
+        public void CheckCardNumber_ThrowsInvalidNumberException()
+        {
+            var creditCardService = new CreditCardService();
+            Assert.Throws<CardNumberInvalidException>(() => creditCardService.ValidateCard("1234123412341ADWASX34"));
+        }
+
         [Fact]
         public void CheckCardNumber_NoSpacesAndDashes_ReturnTrue()
         {
