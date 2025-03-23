@@ -15,6 +15,7 @@ public class CreditCardService
             throw new CardNumberTooShortException();
         if (cardNumber.Length > 19)
             throw new CardNumberTooLongException();
+        cardNumber = cardNumber.Replace(" ", "").Replace("-", "");
         if (!cardNumber.All(char.IsDigit))
             return false;
 

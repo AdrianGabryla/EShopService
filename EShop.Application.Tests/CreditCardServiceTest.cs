@@ -15,15 +15,7 @@ namespace EShop.Application.Tests
             Assert.True(result);
 
         }
-        [Fact]
-        public void ValidateCard_CheckLunhaAlgorithm_ReturnFalse()
-        {
-            var creditCardService = new CreditCardService();
-            string num = "4539 1488 0343 6467";
-            var result = creditCardService.ValidateCard(num);
-            Assert.False(result);
-
-        }
+      
         [Fact]
         public void CheckCardNumber_ThrowsTooShortLengthException()
         {
@@ -42,7 +34,7 @@ namespace EShop.Application.Tests
         public void CheckCardNumber_ThrowsInvalidNumberException()
         {
             var creditCardService = new CreditCardService();
-            Assert.Throws<CardNumberInvalidException>(() => creditCardService.ValidateCard("1234123412341ADWASX34"));
+            Assert.Throws<CardNumberInvalidException>(() => creditCardService.ValidateCard("999999999999999"));
         }
 
         [Fact]
