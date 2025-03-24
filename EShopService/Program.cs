@@ -1,3 +1,5 @@
+using EShop.Application.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// Add services to the container
+builder.Services.AddScoped<ICreditCardService, CreditCardService>();
 
 app.UseHttpsRedirection();
 

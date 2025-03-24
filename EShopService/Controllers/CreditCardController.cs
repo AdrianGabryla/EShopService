@@ -6,43 +6,53 @@ using System.Net;
 
 namespace EShopService.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class CreditCardController : ControllerBase
 {
-        
-    private readonly CreditCardService _creditCardService;
-    public CreditCardController(CreditCardService creditCardService)
-    {
-        _creditCardService = creditCardService;
-    }
-    [HttpPost]
-    public IActionResult Post([FromBody] string cardNumber)
+    protected ICreditCardService
+    
+    
+    private readonly CreditCardService _creditCardService = new();
+
+
+
+    [HttpPost("validate/{cardNumber}")]
+    public IActionResult ValidateCardNumber([FromRoute] string cardNumber)
     {
         try
         {
-            var isValid = _creditCardService.ValidateCard(cardNumber);
-            if (isValid)
-            {
-                var cardType = _creditCardService.GetCardType(cardNumber);
-                return Ok(new { cardNumber, cardType });
-            }
-            else
-            {
-                return BadRequest(new { error = "Invalid card number", code = HttpStatusCode.BadRequest });
-            }
-        }
-        catch (CardNumberTooShortException)
-        {
-            return BadRequest(new { error = "Card number is too short", code = HttpStatusCode.BadRequest });
-        }
-        catch (CardNumberTooLongException)
-        {
-            return BadRequest(new { error = "Card number is too long", code = HttpStatusCode.BadRequest });
+            bool isValid = _creditCardService.ValidateCard(cardNumber);
+            return Ok(new { Valid = isValid });
         }
         catch (CardNumberInvalidException)
         {
-            return BadRequest(new { error = "Card number is invalid", code = HttpStatusCode.BadRequest });
+            return BadRequest(new { code = HttpStatusCode.NotAcceptable });
+        }
+        catch (CardNumberTooShortException e)
+        {
+            return BadRequest(new { code = HttpStatusCode.BadRequest });
+        }
+        catch (CardNumberTooLongException e)
+        {
+            return BadRequest(new { code = HttpStatusCode.RequestedRangeNotSatisfiable });
+        }
+
+    }
+
+    [HttpPost("getCardType/{cardNumber}")]
+    public IActionResult GetCardType([FromRoute] string cardNumber)
+    {
+        try
+        {
+            string validCardProvider = _creditCardService.GetCardType(cardNumber);
+            return Ok(new { Valid = validCardProvider });
+        }
+        catch (CardNumberInvalidException)
+        {
+            return BadRequest(new { code = HttpStatusCode.NotAcceptable });
         }
     }
+
+
 }
