@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using EShop.Domain.Exceptions.CardNumber;
 namespace EShop.Application.Services;
 
-public class CreditCardService
+public class CreditCardService : ICreditCardService
 {
-    public bool ValidateCard(string cardNumber)
+    public bool ValidateCardNumber(string cardNumber)
     {
         if (cardNumber.Length < 13)
             throw new CardNumberTooShortException();

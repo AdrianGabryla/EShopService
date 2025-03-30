@@ -6,53 +6,36 @@ using System.Net;
 
 namespace EShopService.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
+[ApiController]
 public class CreditCardController : ControllerBase
 {
-    protected ICreditCardService
-    
-    
-    private readonly CreditCardService _creditCardService = new();
+    protected ICreditCardService _creditCardService;
 
+    public CreditCardController(ICreditCardService creditCardService)
+    {
+        _creditCardService = creditCardService;
+    }
 
-
-    [HttpPost("validate/{cardNumber}")]
-    public IActionResult ValidateCardNumber([FromRoute] string cardNumber)
+    [HttpGet]
+    public IActionResult Get(string cardNumber)
     {
         try
         {
-            bool isValid = _creditCardService.ValidateCard(cardNumber);
-            return Ok(new { Valid = isValid });
+            _creditCardService.ValidateCardNumber(cardNumber);
+            return Ok(new { cardProvider = _creditCardService.GetCardType(cardNumber) });
+        }
+        catch (CardNumberTooLongException ex)
+        {
+            return StatusCode((int)HttpStatusCode.RequestUriTooLong, new { error = "The card number is too long", code = (int)HttpStatusCode.RequestUriTooLong });
+        }
+        catch (CardNumberTooShortException)
+        {
+            return BadRequest(new { error = "The card number is too short", code = (int)HttpStatusCode.BadRequest });
         }
         catch (CardNumberInvalidException)
         {
-            return BadRequest(new { code = HttpStatusCode.NotAcceptable });
-        }
-        catch (CardNumberTooShortException e)
-        {
-            return BadRequest(new { code = HttpStatusCode.BadRequest });
-        }
-        catch (CardNumberTooLongException e)
-        {
-            return BadRequest(new { code = HttpStatusCode.RequestedRangeNotSatisfiable });
-        }
-
-    }
-
-    [HttpPost("getCardType/{cardNumber}")]
-    public IActionResult GetCardType([FromRoute] string cardNumber)
-    {
-        try
-        {
-            string validCardProvider = _creditCardService.GetCardType(cardNumber);
-            return Ok(new { Valid = validCardProvider });
-        }
-        catch (CardNumberInvalidException)
-        {
-            return BadRequest(new { code = HttpStatusCode.NotAcceptable });
+            return BadRequest(new { error = "Invalid Card Number", code = (int)HttpStatusCode.BadRequest });
         }
     }
-
-
 }

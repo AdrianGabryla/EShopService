@@ -1,43 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EShop.Application.Services;
+using EShop.Domain.Models;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EShopService.Controllers
+namespace EShopService.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ProductController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
+    private readonly IProductService _productService;
+
+    public ProductController(IProductService productService)
     {
-        // GET: api/<ProductController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        _productService = productService;
+    }
 
-        // GET api/<ProductController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+    [HttpGet]
+    public ActionResult<IEnumerable<Product>> GetAllProducts()
+    {
+        var products = _productService.GetAllProducts();
+        return Ok(products);
+    }
 
-        // POST api/<ProductController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+    [HttpGet("{id}")]
+    public ActionResult<Product> GetProductById(int id)
+    {
+        var product = _productService.GetProductById(id);
+        if (product == null)
         {
+            return NotFound();
         }
+        return Ok(product);
+    }
 
-        // PUT api/<ProductController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+    [HttpPost]
+    public ActionResult AddProduct([FromBody] Product product)
+    {
+        _productService.AddProduct(product);
+        return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+    }
 
-        // DELETE api/<ProductController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+    [HttpPut("{id}")]
+    public ActionResult UpdateProduct(int id, [FromBody] Product product)
+    {
+        if (id != product.Id)
         {
+            return BadRequest();
         }
+        _productService.UpdateProduct(product);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult DeleteProduct(int id)
+    {
+        _productService.DeleteProduct(id);
+        return NoContent();
     }
 }
