@@ -10,53 +10,59 @@ namespace EShopService.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly IProductService _productService;
-
+    private IProductService _productService;
     public ProductController(IProductService productService)
     {
         _productService = productService;
     }
 
+    // GET: api/<ProductController>
     [HttpGet]
-    public ActionResult<IEnumerable<Product>> GetAllProducts()
+    public async Task<ActionResult> Get()
     {
-        var products = _productService.GetAllProducts();
-        return Ok(products);
+        var result = await _productService.GetAllAsync();
+        return Ok(result);
     }
 
+    // GET api/<ProductController>/5
     [HttpGet("{id}")]
-    public ActionResult<Product> GetProductById(int id)
+    public async Task<ActionResult> Get(int id)
     {
-        var product = _productService.GetProductById(id);
-        if (product == null)
+        var result = await _productService.GetAsync(id);
+        if (result == null)
         {
             return NotFound();
         }
-        return Ok(product);
+
+        return Ok(result);
     }
 
+    // POST api/<ProductController>
     [HttpPost]
-    public ActionResult AddProduct([FromBody] Product product)
+    public async Task<ActionResult> Post([FromBody] Product product)
     {
-        _productService.AddProduct(product);
-        return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+        var result = await _productService.Add(product);
+
+        return Ok(result);
     }
 
+    // PUT api/<ProductController>/5
     [HttpPut("{id}")]
-    public ActionResult UpdateProduct(int id, [FromBody] Product product)
+    public async Task<ActionResult> Put(int id, [FromBody] Product product)
     {
-        if (id != product.Id)
-        {
-            return BadRequest();
-        }
-        _productService.UpdateProduct(product);
-        return NoContent();
+        var result = await _productService.Update(product);
+
+        return Ok(result);
     }
 
+    // DELETE api/<ProductController>/5
     [HttpDelete("{id}")]
-    public ActionResult DeleteProduct(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        _productService.DeleteProduct(id);
-        return NoContent();
+        var product = await _productService.GetAsync(id);
+        product.Deleted = true;
+        var result = await _productService.Update(product);
+
+        return Ok(result);
     }
 }

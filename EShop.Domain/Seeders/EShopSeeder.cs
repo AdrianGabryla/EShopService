@@ -9,26 +9,22 @@ using System.Threading.Tasks;
 namespace EShop.Domain.Seeders;
 
 
-public class EShopSeeder : IEShopSeeder
+public class EShopSeeder(DataContext context) : IEShopSeeder
 {
-    private readonly DataContext _context;
-
-    public EShopSeeder(DataContext context)
-    {
-        _context = context;
-    }
     public async Task Seed()
     {
         // Sprawdzenie czy tabela jest pusta
-        if (!_context.Products.Any())
+        if (!context.Products.Any())
         {
             var products = new List<Product>
             {
-                new Product {Id = 1, Name = "Dan", Ean = "123", Price = 10, Stock = 2, Sku = "1" },
+                new Product { Name = "Cobi", Ean = "1234" },
+                    new Product { Name = "Duplo", Ean = "431" },
+                    new Product { Name = "Lego", Ean = "12212" }
             };
 
-            _context.Products.AddRange(products);
-            _context.SaveChanges();
+            context.Products.AddRange(products);
+            context.SaveChanges();
         }
     }
 }
