@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using Xunit;
+﻿using EShop.Domain.Models;
+using EShop.Application.Services;
+using EShopService.Controllers;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using EShop.Domain.Repositories;
-using EShop.Domain.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Net.Http.Json;
+using EShop.Domain.Repositories;
 
 namespace EShopService.IntegrationTests.Controllers;
 
@@ -32,13 +23,13 @@ public class ProductControllerIntegrationTest : IClassFixture<WebApplicationFact
                 {
                     // pobranie dotychczasowej konfiguracji bazy danych
                     var dbContextOptions = services
-                        .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<DbContext>));
+                        .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<DataContext>));
 
                     // usunięcie dotychczasowej konfiguracji bazy danych
                     services.Remove(dbContextOptions);
 
                     // Stworzenie nowej bazy danych
-                    services.AddDbContext<DbContext>(options => options.UseInMemoryDatabase("MyDBForTest"));
+                    services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("MyDBForTest"));
 
                 });
             });
@@ -52,7 +43,7 @@ public class ProductControllerIntegrationTest : IClassFixture<WebApplicationFact
         using (var scope = _factory.Services.CreateScope())
         {
             // Pobranie kontekstu bazy danych
-            var dbContext = scope.ServiceProvider.GetRequiredService<DbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
             dbContext.Products.RemoveRange(dbContext.Products);
             // Stworzenie obiektu
             dbContext.Products.AddRange(new Product
@@ -71,5 +62,51 @@ public class ProductControllerIntegrationTest : IClassFixture<WebApplicationFact
         //Assert
         var products = await response.Content.ReadFromJsonAsync<List<Product>>();
         Assert.Equal(1, products?.Count);
+    }
+    [Fact]
+    public async Task Post_AddThousandsProductsAsync_ExceptedThousandsProducts()
+    {
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var start = DateTime.Now;
+            var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            dbContext.Products.RemoveRange(dbContext.Products);
+            await dbContext.SaveChangesAsync();
+            for (int i = 0; i < 10000; i++)
+            {
+                dbContext.Products.AddRange(new Product { Id = i });
+                await dbContext.SaveChangesAsync();
+            }
+            var response = await _client.GetAsync("/api/products");
+            response.EnsureSuccessStatusCode();
+
+
+            //Assert
+            var products = await response.Content.ReadFromJsonAsync<List<Product>>();
+            Assert.Equal(10000, products?.Count);
+            Console.WriteLine(DateTime.Now - start);
+        }
+    }
+    [Fact]
+    public async Task Post_AddThousandsProducts_ExceptedThousandsProducts()
+    {
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+            dbContext.Products.RemoveRange(dbContext.Products);
+            await dbContext.SaveChangesAsync();
+            for (int i = 0; i < 10000; i++)
+            {
+                dbContext.Products.AddRange(new Product { Id = i });
+                dbContext.SaveChanges();
+            }
+            var response = await _client.GetAsync("/api/products");
+            response.EnsureSuccessStatusCode();
+
+
+            //Assert
+            var products = await response.Content.ReadFromJsonAsync<List<Product>>();
+            Assert.Equal(10000, products?.Count);
+        }
     }
 }

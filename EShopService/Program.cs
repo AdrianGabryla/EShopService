@@ -49,6 +49,8 @@ public class Program
         var seeder = scope.ServiceProvider.GetRequiredService<IEShopSeeder>();
         await seeder.Seed();
 
+        
+
         app.Run();
     }
 }
