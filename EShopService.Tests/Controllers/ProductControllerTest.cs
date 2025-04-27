@@ -64,20 +64,20 @@ public class ProductControllerTests
     {
         //Arrange
         var product = new Product();
-        _mockService.Setup(s => s.Add(It.IsAny<Product>())).ReturnsAsync(product);
+        _mockService.Setup(s => s.AddAsync(It.IsAny<Product>())).ReturnsAsync(product);
         //Act
         var result = await _controller.Post(product);
         //Assert
-        _mockService.Verify(s => s.Add(product), Times.Once);
+        _mockService.Verify(s => s.AddAsync(product), Times.Once);
         Assert.IsType<OkObjectResult>(result);
     }
     [Fact]
     public async Task Put_UpdateProductById_ReturnTrue()
     {
         var product = new Product { Id = 1 };
-        _mockService.Setup(s => s.Update(product)).ReturnsAsync(product);
+        _mockService.Setup(s => s.UpdateAsync(product)).ReturnsAsync(product);
         var result = await _controller.Put(1, product);
-        _mockService.Verify(s => s.Update(product), Times.Once);
+        _mockService.Verify(s => s.UpdateAsync(product), Times.Once);
         Assert.IsType<OkObjectResult>(result);
     }
     [Fact]
@@ -85,10 +85,10 @@ public class ProductControllerTests
     {
         var product = new Product { Id = 1, Deleted = false };
         _mockService.Setup(s => s.GetAsync(1)).ReturnsAsync(product);
-        _mockService.Setup(s => s.Update(It.IsAny<Product>())).ReturnsAsync(product);
+        _mockService.Setup(s => s.UpdateAsync(It.IsAny<Product>())).ReturnsAsync(product);
         var result = await _controller.Delete(1);
         _mockService.Verify(s => s.GetAsync(1), Times.Once);
-        _mockService.Verify(s => s.Update(It.Is<Product>(p => p.Deleted)), Times.Once);
+        _mockService.Verify(s => s.UpdateAsync(It.Is<Product>(p => p.Deleted)), Times.Once);
         Assert.IsType<OkObjectResult>(result);
     }
 
