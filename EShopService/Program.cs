@@ -49,7 +49,7 @@ public class Program
         var seeder = scope.ServiceProvider.GetRequiredService<IEShopSeeder>();
         await seeder.Seed();
 
-        
+        builder.Services.AddMemoryCache();
 
         app.Run();
     }
