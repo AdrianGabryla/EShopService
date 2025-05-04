@@ -21,11 +21,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShopService.IntegrationTes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User", "User", "{42ECEECA-9C66-47B1-B649-6AB437DD1562}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{85AD5D2F-E174-4206-9CDE-C42DB88BF12C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService", "UserService\UserService.csproj", "{85AD5D2F-E174-4206-9CDE-C42DB88BF12C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Domain", "User.Domain\User.Domain.csproj", "{F75544C4-70CC-40D6-ABCB-80615295349E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Domain", "User.Domain\User.Domain.csproj", "{F75544C4-70CC-40D6-ABCB-80615295349E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Application", "User.Application\User.Application.csproj", "{03B05B95-B60F-4AA0-AE04-45C76067C11A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.Application", "User.Application\User.Application.csproj", "{03B05B95-B60F-4AA0-AE04-45C76067C11A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{29BBF2BB-6738-418A-9325-6C3C5042B97D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9118DA95-4A5C-408A-A1C5-F6A7257B4D91}"
+	ProjectSection(SolutionItems) = preProject
+		init.sql = init.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +80,10 @@ Global
 		{03B05B95-B60F-4AA0-AE04-45C76067C11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03B05B95-B60F-4AA0-AE04-45C76067C11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03B05B95-B60F-4AA0-AE04-45C76067C11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BBF2BB-6738-418A-9325-6C3C5042B97D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BBF2BB-6738-418A-9325-6C3C5042B97D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BBF2BB-6738-418A-9325-6C3C5042B97D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BBF2BB-6738-418A-9325-6C3C5042B97D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

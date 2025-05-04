@@ -1,7 +1,7 @@
 ﻿using EShop.Application.Services;
 using EShop.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Memory; 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EShopService.Controllers;

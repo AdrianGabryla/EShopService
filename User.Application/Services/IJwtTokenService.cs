@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace User.Application.Services;
 
-internal interface IJwtTokenService
+public interface IJwtTokenService
 {
     public string GenerateToken(int userId, List<string> roles);
 
